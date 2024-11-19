@@ -1,0 +1,3 @@
+# minimum needed to build jupyter suggestions.
+
+hatchling>=1.5.0,<2
