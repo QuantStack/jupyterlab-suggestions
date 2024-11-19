@@ -14,10 +14,10 @@
     "preserveWatchOutput": true,
     "resolveJsonModule": true,
     "outDir": "lib",
-    "rootDir": "src",
+    "rootDir": "python/jupyter_suggestions_core/src",
     "strict": true,
     "strictNullChecks": true,
     "target": "ES2018"
   },
-  "include": ["src/*"]
+  "include": ["python/jupyter_suggestions_core/src/*"]
 }

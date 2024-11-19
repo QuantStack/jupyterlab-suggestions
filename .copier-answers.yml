@@ -6,7 +6,7 @@ author_name: QuantStack
 has_binder: false
 has_settings: false
 kind: frontend
-labextension_name: jupyterlab-suggestions
+labextension_name: jupyter-suggestions
 project_short_description: A JupyterLab extension for suggesting changes.
 python_name: jupyterlab_suggestions
 repository: https://github.com/QuantStack/jupyterlab-suggestions

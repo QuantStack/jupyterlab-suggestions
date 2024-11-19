@@ -3,15 +3,12 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
-/**
- * Initialization data for the jupyterlab-suggestions extension.
- */
 const plugin: JupyterFrontEndPlugin<void> = {
-  id: 'jupyterlab-suggestions:plugin',
+  id: 'jupyter-suggestions:plugin',
   description: 'A JupyterLab extension for suggesting changes.',
   autoStart: true,
   activate: (app: JupyterFrontEnd) => {
-    console.log('JupyterLab extension jupyterlab-suggestions is activated!');
+    console.log('JupyterLab extension jupyter-suggestions is activated!');
   }
 };
 
