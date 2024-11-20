@@ -90,3 +90,60 @@ jobs:
       - uses: actions/checkout@v4
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - uses: jupyterlab/maintainer-tools/.github/actions/check-links@v1
+
+  build-lite:
+    name: Build JupyterLite
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install the dependencies
+        run: |
+          python -m pip install jupyterlite-core jupyterlite-pyodide-kernel
+
+      - name: Download extension package
+        uses: actions/download-artifact@v4
+        with:
+          name: extension-artifacts
+
+      - name: Install the extension
+        run: |
+          set -eux
+          cp ./jupyter_suggestions_core/dist/jupyter_suggestions*.whl .
+          python -m pip install jupyter_suggestions*.whl
+
+      - name: Build the lite site
+        run: |
+          set -eux
+          jupyter lite build --output-dir dist
+
+      - name: Upload github-pages artifact
+        id: upload-jupyterlite-artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+          retention-days: 30
+
+  deploy:
+    needs: [build-lite]
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
