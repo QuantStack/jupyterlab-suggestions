@@ -49,7 +49,7 @@
         "prettier:base": "prettier \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}\"",
         "prettier:check": "jlpm prettier:base --check",
         "stylelint": "jlpm stylelint:check --fix",
-        "stylelint:check": "stylelint --cache \"style/**/*.css\""
+        "stylelint:check": "stylelint --cache \"**/style/**/*.css\""
     },
     "devDependencies": {
         "@jupyterlab/builder": "^4.0.0",
@@ -91,7 +91,7 @@
         ],
         "parser": "@typescript-eslint/parser",
         "parserOptions": {
-            "project": "tsconfig.json",
+            "project": "tsconfig.eslint.json",
             "sourceType": "module"
         },
         "plugins": [

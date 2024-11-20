@@ -17,10 +17,12 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
 ]
-dependencies = []
+dependencies = [
+  "jupyter_suggestions_core==0.1.0"
+]
 dynamic = ["version", "description", "authors", "urls", "keywords"]
 license = {file = "LICENSE"}
-name = "jupyterlab_suggestions"
+name = "jupyter_suggestions"
 readme = "README.md"
 requires-python = ">=3.9"
 
