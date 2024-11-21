@@ -1,0 +1,54 @@
+{
+  "name": "@jupyter-suggestions/base",
+  "version": "0.1.0",
+  "description": "Base components of jupyter-suggestions extension",
+  "keywords": [
+    "jupyter",
+    "jupyterlab",
+    "jupyterlab-extension"
+  ],
+  "homepage": "https://github.com/QuantStack/jupyterlab-suggestions",
+  "bugs": {
+    "url": "https://github.com/QuantStack/jupyterlab-suggestions/issues"
+  },
+  "license": "BSD-3-Clause",
+  "author": "QuantStack",
+  "files": [
+    "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
+    "style/**/*.{css,js,eot,gif,html,jpg,json,png,svg,woff2,ttf}",
+    "src/**/*.{ts,tsx,svg}"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "style": "style/index.css",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/QuantStack/jupyterlab-suggestions.git"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "build:prod": "jlpm run clean && jlpm run build",
+    "clean": "rimraf tsconfig.tsbuildinfo",
+    "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
+    "clean:all": "jlpm run clean:lib",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@jupyterlab/apputils": "^4.0.0",
+    "@jupyterlab/docregistry": "^4.0.0",
+    "@jupyterlab/ui-components": "^4.0.0",
+    "@lumino/widgets": "^2.0.0"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.2",
+    "typescript": "^5"
+  },
+  "sideEffects": [
+    "style/*.css",
+    "style/index.js"
+  ],
+  "styleModule": "style/index.js",
+  "publishConfig": {
+    "access": "public"
+  }
+}
