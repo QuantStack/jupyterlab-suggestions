@@ -1,13 +1,13 @@
 {
-  "title": "@jupyter-suggestions/jupyter-suggestions-core",
-  "description": "@jupyter-suggestions/jupyter-suggestions-core settings.",
+  "title": "@jupyter/jupyter-suggestions-core",
+  "description": "@jupyter/jupyter-suggestions-core settings.",
   "type": "object",
   "additionalProperties": false,
   "jupyter.lab.toolbars": {
     "Cell": [
       {
-        "name": "jupyter-suggestions:command:add-cell-suggestion",
-        "command": "jupyter-suggestions:command:add-cell-suggestion"
+        "name": "jupyter-suggestions-core:add-cell-suggestion",
+        "command": "jupyter-suggestions-core:add-cell-suggestion"
       }
     ]
   }

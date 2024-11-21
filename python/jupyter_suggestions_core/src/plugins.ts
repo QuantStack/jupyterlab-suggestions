@@ -3,7 +3,7 @@ import {
   ISuggestionsModel,
   SuggestionsModel,
   SuggestionsPanelWidget
-} from '@jupyter-suggestions/base';
+} from '@jupyter/jupyter-suggestions-base';
 import {
   ILayoutRestorer,
   JupyterFrontEnd,
@@ -13,7 +13,7 @@ import { INotebookTracker } from '@jupyterlab/notebook';
 
 import { ISuggestionsModelToken } from './tokens';
 
-const NAME_SPACE = '@jupyter-suggestions/jupyter-suggestions-core';
+const NAME_SPACE = '@jupyter/jupyter-suggestions-core';
 
 export const suggestionsModelPlugin: JupyterFrontEndPlugin<ISuggestionsModel> =
   {
@@ -38,7 +38,7 @@ export const COMMAND_IDS = {
   /**
    * Command to add a cell suggestion.
    */
-  addCellSuggestion: 'jupyter-suggestions:command:add-cell-suggestion'
+  addCellSuggestion: 'jupyter-suggestions-core:add-cell-suggestion'
 };
 
 export const commandsPlugin: JupyterFrontEndPlugin<void> = {

@@ -36,8 +36,8 @@ artifacts = ["jupyter_suggestions_core/labextension"]
 exclude = [".github", "binder", "node_modules"]
 
 [tool.hatch.build.targets.wheel.shared-data]
-"install.json" = "share/jupyter/labextensions/@jupyter-suggestions/jupyter-suggestions-core/install.json"
-"jupyter_suggestions_core/labextension" = "share/jupyter/labextensions/@jupyter-suggestions/jupyter-suggestions-core"
+"install.json" = "share/jupyter/labextensions/@jupyter/jupyter-suggestions-core/install.json"
+"jupyter_suggestions_core/labextension" = "share/jupyter/labextensions/@jupyter/jupyter-suggestions-core"
 
 [tool.hatch.build.hooks.version]
 path = "jupyter_suggestions_core/_version.py"

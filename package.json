@@ -1,5 +1,5 @@
 {
-    "name": "@jupyter-suggestions/jupyter-suggestions-root",
+    "name": "@jupyter/jupyter-suggestions-root",
     "version": "0.1.0",
     "private": true,
     "description": "A JupyterLab extension for suggesting changes.",

@@ -1,5 +1,5 @@
 {
-  "name": "@jupyter-suggestions/jupyter-suggestions-core",
+  "name": "@jupyter/jupyter-suggestions-core",
   "version": "0.1.0",
   "description": "Jupyter Suggestions core extension",
   "keywords": [
@@ -44,7 +44,7 @@
     "watch:labextension": "jupyter labextension watch ."
   },
   "dependencies": {
-    "@jupyter-suggestions/base": "^0.1.0",
+    "@jupyter/jupyter-suggestions-base": "^0.1.0",
     "@jupyterlab/application": "^4.0.0",
     "@jupyterlab/notebook": "^4.0.0"
   },
