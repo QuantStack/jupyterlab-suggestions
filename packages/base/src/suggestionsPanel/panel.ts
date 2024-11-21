@@ -14,7 +14,6 @@ export class SuggestionsPanelWidget extends SidePanel {
 
     const header = new SuggestionsPanelHeader();
     this.header.addWidget(header);
-    console.log('this model', this._model);
     options.tracker.currentChanged.connect(async (_, changed) => {
       if (changed) {
         header.title.label = changed.context.localPath;
@@ -23,6 +22,10 @@ export class SuggestionsPanelWidget extends SidePanel {
         header.title.label = '-';
       }
     });
+  }
+
+  get model(): ISuggestionsModel {
+    return this._model;
   }
 
   dispose(): void {
