@@ -486,7 +486,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyter-suggestions/base@workspace:packages/base":
+"@jupyter-suggestions/base@^0.1.0, @jupyter-suggestions/base@workspace:packages/base":
   version: 0.0.0-use.local
   resolution: "@jupyter-suggestions/base@workspace:packages/base"
   dependencies:
@@ -503,6 +503,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyter-suggestions/jupyter-suggestions-core@workspace:python/jupyter_suggestions_core"
   dependencies:
+    "@jupyter-suggestions/base": ^0.1.0
     "@jupyterlab/application": ^4.0.0
     "@jupyterlab/builder": ^4.0.0
     "@jupyterlab/notebook": ^4.0.0
