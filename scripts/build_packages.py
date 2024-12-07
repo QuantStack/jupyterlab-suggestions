@@ -12,7 +12,7 @@ def build_packages():
     install_build_deps = f"python -m pip install -r {requirements_build_path}"
 
     python_package_prefix = "python"
-    python_packages = ["jupyter_suggestions_core"]
+    python_packages = ["jupyter_suggestions_core", "jupyter_suggestions_rtc"]
 
     execute(install_build_deps)
 

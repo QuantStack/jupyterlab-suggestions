@@ -9,6 +9,8 @@ import {
 import { CellWidget, suggestionCellSelectedStyle } from './suggestionWidget';
 import { suggestionsWidgetAreaStyle } from './style';
 import { Dialog, showDialog } from '@jupyterlab/apputils';
+import { ISharedCell } from '@jupyter/ydoc';
+import { Debouncer } from '@lumino/polling';
 
 export class SuggestionsWidget extends PanelWithToolbar {
   constructor(options: SuggestionsWidget.IOptions) {
@@ -75,6 +77,13 @@ export class SuggestionsWidget extends PanelWithToolbar {
       default:
         break;
     }
+
+    const count = this._suggestionsArea.widgets.length;
+    if (count && count !== 0) {
+      this.title.label = `All Suggestions (${count})`;
+    } else {
+      this.title.label = 'All Suggestions';
+    }
   }
 
   private _handleActiveCellChanged(
@@ -109,6 +118,12 @@ export class SuggestionsWidget extends PanelWithToolbar {
   }
   private _renderSuggestions() {
     const allSuggestions = this._model.allSuggestions;
+    const count = allSuggestions?.size ?? 0;
+    if (count && count !== 0) {
+      this.title.label = `All Suggestions (${count})`;
+    } else {
+      this.title.label = 'All Suggestions';
+    }
     const allWidgets = this._suggestionsArea.widgets;
     for (const element of allWidgets) {
       element.dispose();
@@ -132,7 +147,7 @@ export class SuggestionsWidget extends PanelWithToolbar {
     suggestionData: ISuggestionData;
   }): { widget: CellWidget; index: number } {
     const { suggestionId, suggestionData } = options;
-    const cellId = suggestionData.content.id as string | undefined;
+    const cellId = suggestionData.originalCellModel.id as string | undefined;
 
     const cellIdx = this._model.getCellIndex(cellId);
 
@@ -158,9 +173,22 @@ export class SuggestionsWidget extends PanelWithToolbar {
       }
     };
 
-    const updateCallback = async (newSource: string) => {
-      await this._model.updateSuggestion({ cellId, suggestionId, newSource });
-    };
+    const debouncer = new Debouncer(async (cellModel: ISharedCell) => {
+      const newContent = cellModel.toJSON();
+      await this._model.updateSuggestion({
+        cellId,
+        suggestionId,
+        newSource: newContent.source as string
+      });
+    }, 500);
+    suggestionData.cellModel.sharedModel.changed.connect(
+      async (cellModel, changed) => {
+        debouncer.invoke(cellModel);
+      }
+    );
+    suggestionData.cellModel.sharedModel.disposed.connect(
+      () => void debouncer.dispose()
+    );
 
     const acceptCallback = async () => {
       const accepted = await this._model.acceptSuggestion({
@@ -182,8 +210,8 @@ export class SuggestionsWidget extends PanelWithToolbar {
     const w = new CellWidget({
       suggestionData,
       deleteCallback,
-      updateCallback,
-      acceptCallback
+      acceptCallback,
+      liveUpdate: this._model.sourceLiveUpdate
     });
 
     w.id = suggestionId;

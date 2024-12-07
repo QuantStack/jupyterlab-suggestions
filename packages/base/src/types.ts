@@ -2,15 +2,29 @@ import { NotebookPanel } from '@jupyterlab/notebook';
 import { ISignal } from '@lumino/signaling';
 import { IDisposable } from '@lumino/disposable';
 import { Cell, ICellModel } from '@jupyterlab/cells';
-import { ICell } from '@jupyterlab/nbformat';
 export interface IDict<T = any> {
   [key: string]: T;
 }
+
+/**
+ * Interface defining the structure of a suggestion.
+ **/
 export interface ISuggestionData {
-  content: ICell;
-  newSource: string;
+  /**
+   * The current model of the cell being suggested.
+   */
+  originalCellModel: ICellModel;
+
+  /**
+   * The model of the suggestion cell.
+   */
+  cellModel: ICellModel;
 }
 
+export interface ISerializedSuggessionData {
+  originalCellId: string;
+  newSource: string;
+}
 /**
  * Interface defining the structure and behavior of a suggestions model.
  *
@@ -20,6 +34,11 @@ export interface ISuggestionData {
  * suggestion-related changes, and interact with the notebook cells.
  */
 export interface ISuggestionsModel extends IDisposable {
+  /**
+   * Does current manager support live update of the source cell.
+   */
+  sourceLiveUpdate: boolean;
+
   /**
    * The file path of the currently active notebook.
    */
@@ -159,6 +178,11 @@ export type IAllSuggestions = Map<string, IDict<ISuggestionData>>;
  * is changed.
  */
 export interface ISuggestionsManager extends IDisposable {
+  /**
+   * Does this manager support live update of the source cell?
+   */
+  sourceLiveUpdate: boolean;
+
   /**
    * Signal emitted when a suggestion is changed.
    */

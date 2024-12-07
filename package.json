@@ -25,7 +25,8 @@
     },
     "workspaces": [
         "packages/*",
-        "python/jupyter_suggestions_core"
+        "python/jupyter_suggestions_core",
+        "python/jupyter_suggestions_rtc"
     ],
     "scripts": {
         "build": "lerna run build",

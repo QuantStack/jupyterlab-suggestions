@@ -12,6 +12,10 @@ export class SuggestionsModel implements ISuggestionsModel {
     this.switchNotebook(options.panel);
     this.switchManager(options.suggestionsManager);
   }
+
+  get sourceLiveUpdate(): boolean {
+    return Boolean(this._suggestionsManager?.sourceLiveUpdate);
+  }
   get filePath(): string {
     return this._filePath ?? '-';
   }

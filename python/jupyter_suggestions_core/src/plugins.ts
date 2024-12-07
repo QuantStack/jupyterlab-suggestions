@@ -140,6 +140,7 @@ export const suggestionsManagerPlugin: JupyterFrontEndPlugin<void> = {
     tracker: INotebookTracker,
     managerRegistry?: ISuggestionsManagerRegistry
   ) => {
+    console.log(`${NAME_SPACE}:manager is activated`);
     if (managerRegistry) {
       const manager = new LocalSuggestionsManager({ tracker });
       const success = managerRegistry.register({
@@ -167,6 +168,7 @@ export const registryPlugin: JupyterFrontEndPlugin<ISuggestionsManagerRegistry> 
       settingRendererRegistry: IFormRendererRegistry | null,
       translator_: ITranslator | null
     ) => {
+      console.log(`${NAME_SPACE}:registry is activated`);
       const SETTING_KEY = 'suggestionsManager';
       const pluginId = `${NAME_SPACE}:registry`;
       const registryManager = new SuggestionsManagerRegistry();

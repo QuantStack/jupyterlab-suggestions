@@ -37,6 +37,7 @@ skip = ["check-python"]
 python_packages = [
   "python/jupyter_suggestions:jupyter_suggestions",
   "python/jupyter_suggestions_core:jupyter_suggestions_core",
+  "python/jupyter_suggestions_rtc:jupyter_suggestions_rtc",
 ]
 version_cmd = "python scripts/bump-version.py"
 
