@@ -39,7 +39,8 @@ export class SuggestionsPanelWidget extends SidePanel {
 
   private _handleNotebookSwitched() {
     const filePath = this._model.filePath;
-    this._headerWidget.title.label = filePath;
+    const managerName = this._model.getSuggestionManagerName();
+    this._headerWidget.title.label = `${managerName} - ${filePath}`;
   }
 
   private _model: ISuggestionsModel;

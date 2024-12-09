@@ -17,7 +17,7 @@ def install_dev():
     build_js = "jlpm build"
 
     python_package_prefix = "python"
-    python_packages = ["jupyter_suggestions_core"]
+    python_packages = ["jupyter_suggestions_core", "jupyter_suggestions_rtc"]
 
     execute(install_build_deps)
     execute(install_js_deps)
@@ -28,12 +28,11 @@ def install_dev():
         execute("jlpm clean:all", cwd=root_path / "python" / py_package)
         execute(f"pip install -e {python_package_prefix}/{py_package}")
 
-        if py_package in ["jupyter_suggestions_core"]:
+        if py_package in ["jupyter_suggestions_core", "jupyter_suggestions_rtc"]:
             execute(
                 f"jupyter labextension develop {python_package_prefix}/{py_package} --overwrite"
             )
 
 
 if __name__ == "__main__":
-
     install_dev()
