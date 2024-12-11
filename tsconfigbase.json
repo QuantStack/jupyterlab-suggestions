@@ -17,6 +17,6 @@
     "strict": true,
     "strictNullChecks": true,
     "target": "ES2018",
-    "lib": ["es2022.intl", "dom"]
+    "lib": ["es2022.intl", "ES2018", "dom"]
   }
 }

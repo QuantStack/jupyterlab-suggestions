@@ -1,5 +1,5 @@
 {
-  "name": "@jupyter/jupyter-suggestions-base",
+  "name": "@jupyter/suggestions-base",
   "version": "0.1.0",
   "description": "Base components of jupyter-suggestions extension",
   "keywords": [

@@ -1,7 +1,7 @@
 {
-  "name": "@jupyter/suggestions-core",
+  "name": "@jupyter/suggestions-rtc",
   "version": "0.1.0",
-  "description": "Jupyter Suggestions core extension",
+  "description": "jupyter-suggestions with jupyter-collaboration backend",
   "keywords": [
     "jupyter",
     "jupyterlab",
@@ -36,7 +36,7 @@
     "clean": "jlpm clean:lib",
     "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
     "clean:lintcache": "rimraf .eslintcache .stylelintcache",
-    "clean:labextension": "rimraf jupyter_suggestions_core/labextension jupyter_suggestions_core/_version.py",
+    "clean:labextension": "rimraf jupyter_suggestions_rtc/labextension jupyter_suggestions_rtc/_version.py",
     "clean:all": "jlpm clean:lib && jlpm clean:labextension && jlpm clean:lintcache",
     "install:extension": "jlpm build",
     "watch": "run-p watch:src watch:labextension",
@@ -44,13 +44,11 @@
     "watch:labextension": "jupyter labextension watch ."
   },
   "dependencies": {
+    "@jupyter/collaborative-drive": "^3.1.0",
+    "@jupyter/docprovider": "^3.1.0",
     "@jupyter/suggestions-base": "^0.1.0",
     "@jupyterlab/application": "^4.0.0",
-    "@jupyterlab/notebook": "^4.0.0",
-    "@jupyterlab/settingregistry": "^4.0.0",
-    "@jupyterlab/translation": "^4.0.0",
-    "@jupyterlab/ui-components": "^4.0.0",
-    "@rjsf/utils": "^5.22.0"
+    "@jupyterlab/notebook": "^4.0.0"
   },
   "devDependencies": {
     "@jupyterlab/builder": "^4.0.0",
@@ -73,16 +71,24 @@
           "pip"
         ],
         "base": {
-          "name": "jupyter_suggestions_core"
+          "name": "jupyter_suggestions_rtc"
         }
       }
     },
     "extension": true,
-    "outputDir": "jupyter_suggestions_core/labextension",
+    "outputDir": "jupyter_suggestions_rtc/labextension",
     "sharedPackages": {
       "@jupyter/suggestions-base": {
         "singleton": true,
-        "bundled": true
+        "bundled": false
+      },
+      "@jupyter/docprovider": {
+        "singleton": true,
+        "bundled": false
+      },
+      "@jupyter/collaborative-drive": {
+        "singleton": true,
+        "bundled": false
       }
     },
     "schemaDir": "schema"

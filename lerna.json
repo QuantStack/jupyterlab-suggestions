@@ -1,6 +1,10 @@
 {
-  "npmClient": "yarn",
+  "npmClient": "jlpm",
   "version": "independent",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
-  "packages": ["packages/*", "python/jupyter_suggestions_core"]
+  "packages": [
+    "packages/*",
+    "python/jupyter_suggestions_core",
+    "python/jupyter_suggestions_rtc"
+  ]
 }

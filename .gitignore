@@ -119,3 +119,6 @@ dmypy.json
 
 # Yarn cache
 .yarn/
+
+python/jupyter_suggestions_rtc/jupyter_suggestions_rtc/labextension
+python/jupyter_suggestions_rtc/jupyter_suggestions_rtc/_version.py

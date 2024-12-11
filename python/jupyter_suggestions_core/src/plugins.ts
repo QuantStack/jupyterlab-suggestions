@@ -8,7 +8,7 @@ import {
   SuggestionsManagerRegistry,
   SuggestionsModel,
   SuggestionsPanelWidget
-} from '@jupyter/jupyter-suggestions-base';
+} from '@jupyter/suggestions-base';
 import {
   ILayoutRestorer,
   JupyterFrontEnd,
@@ -24,7 +24,7 @@ import {
 import { SuggestionsSettingComponent } from './settingrenderer';
 import type { FieldProps } from '@rjsf/utils';
 
-const NAME_SPACE = '@jupyter/jupyter-suggestions-core';
+const NAME_SPACE = '@jupyter/suggestions-core';
 
 export const suggestionsModelPlugin: JupyterFrontEndPlugin<ISuggestionsModel> =
   {
@@ -46,9 +46,9 @@ export const suggestionsModelPlugin: JupyterFrontEndPlugin<ISuggestionsModel> =
         suggestionsManager
       });
       tracker.currentChanged.connect(async (_, changed) => {
-        if (changed) {
-          await changed.context.ready;
-          model.switchNotebook(changed);
+        if (tracker.currentWidget) {
+          await tracker.currentWidget.context.ready;
+          model.switchNotebook(tracker.currentWidget);
         } else {
           model.switchNotebook(null);
         }
@@ -140,6 +140,7 @@ export const suggestionsManagerPlugin: JupyterFrontEndPlugin<void> = {
     tracker: INotebookTracker,
     managerRegistry?: ISuggestionsManagerRegistry
   ) => {
+    console.log(`${NAME_SPACE}:manager is activated`);
     if (managerRegistry) {
       const manager = new LocalSuggestionsManager({ tracker });
       const success = managerRegistry.register({
@@ -167,6 +168,7 @@ export const registryPlugin: JupyterFrontEndPlugin<ISuggestionsManagerRegistry> 
       settingRendererRegistry: IFormRendererRegistry | null,
       translator_: ITranslator | null
     ) => {
+      console.log(`${NAME_SPACE}:registry is activated`);
       const SETTING_KEY = 'suggestionsManager';
       const pluginId = `${NAME_SPACE}:registry`;
       const registryManager = new SuggestionsManagerRegistry();

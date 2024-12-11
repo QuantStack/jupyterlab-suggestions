@@ -2,13 +2,38 @@ import { NotebookPanel } from '@jupyterlab/notebook';
 import { ISignal } from '@lumino/signaling';
 import { IDisposable } from '@lumino/disposable';
 import { Cell, ICellModel } from '@jupyterlab/cells';
-import { ICell } from '@jupyterlab/nbformat';
 export interface IDict<T = any> {
   [key: string]: T;
 }
+
+/**
+ * Interface defining the structure of a suggestion returned from a manager.
+ **/
 export interface ISuggestionData {
-  content: ICell;
-  newSource: string;
+  /**
+   * The current id of the cell being suggested.
+   */
+  originalCellId: string;
+
+  /**
+   * The model of the suggestion cell.
+   */
+  cellModel: ICellModel;
+}
+
+/**
+ * Interface defining the structure of a suggestion used by the view widget.
+ **/
+export interface ISuggestionViewData {
+  /**
+   * The current model of the cell being suggested.
+   */
+  originalCellModel: ICellModel;
+
+  /**
+   * The model of the suggestion cell.
+   */
+  cellModel: ICellModel;
 }
 
 /**
@@ -20,6 +45,11 @@ export interface ISuggestionData {
  * suggestion-related changes, and interact with the notebook cells.
  */
 export interface ISuggestionsModel extends IDisposable {
+  /**
+   * Does current manager support live update of the source cell.
+   */
+  sourceLiveUpdate: boolean;
+
   /**
    * The file path of the currently active notebook.
    */
@@ -33,7 +63,7 @@ export interface ISuggestionsModel extends IDisposable {
   /**
    * All suggestions associated with the current notebook.
    */
-  allSuggestions: IAllSuggestions | undefined;
+  allSuggestions: IAllSuggestionViewData | undefined;
 
   /**
    * Signal emitted when the notebook is switched.
@@ -58,6 +88,11 @@ export interface ISuggestionsModel extends IDisposable {
     ISuggestionsModel,
     Omit<ISuggestionChange, 'notebookPath'>
   >;
+
+  /**
+   * Name of the current suggestion manager.
+   */
+  getSuggestionManagerName(): string;
 
   /**
    * Switches the active notebook to the specified panel or null.
@@ -131,7 +166,7 @@ export interface ISuggestionsModel extends IDisposable {
   getSuggestion(options: {
     cellId: string;
     suggestionId: string;
-  }): Promise<ISuggestionData | undefined>;
+  }): Promise<ISuggestionViewData | undefined>;
 
   /**
    * Retrieves the index of a cell by its ID.
@@ -148,7 +183,8 @@ export interface ISuggestionChange {
   operator: 'added' | 'deleted' | 'modified';
   suggestionId: string;
 }
-export type IAllSuggestions = Map<string, IDict<ISuggestionData>>;
+export type IAllSuggestionViewData = Map<string, IDict<ISuggestionViewData>>;
+export type IAllSuggestionData = Map<string, IDict<ISuggestionData>>;
 
 /**
  * Interface defining a suggestions manager.
@@ -159,6 +195,16 @@ export type IAllSuggestions = Map<string, IDict<ISuggestionData>>;
  * is changed.
  */
 export interface ISuggestionsManager extends IDisposable {
+  /**
+   * Suggestion manager name
+   */
+  name: string;
+
+  /**
+   * Does this manager support live update of the source cell?
+   */
+  sourceLiveUpdate: boolean;
+
   /**
    * Signal emitted when a suggestion is changed.
    */
@@ -172,7 +218,7 @@ export interface ISuggestionsManager extends IDisposable {
    */
   getAllSuggestions(
     notebook: NotebookPanel
-  ): Promise<IAllSuggestions | undefined>;
+  ): Promise<IAllSuggestionData | undefined>;
 
   /**
    * Adds a new suggestion to a specified cell in the notebook.

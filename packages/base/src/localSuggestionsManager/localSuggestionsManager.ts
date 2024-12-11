@@ -1,49 +1,72 @@
-import { INotebookTracker, NotebookPanel } from '@jupyterlab/notebook';
 import {
-  IAllSuggestions,
+  Cell,
+  CellModel,
+  CodeCellModel,
+  ICellModel,
+  MarkdownCellModel,
+  RawCellModel
+} from '@jupyterlab/cells';
+import { ICell } from '@jupyterlab/nbformat';
+import { NotebookPanel } from '@jupyterlab/notebook';
+import { UUID } from '@lumino/coreutils';
+
+import { BaseSuggestionsManager } from '../baseSuggestionsManager';
+import {
+  IAllSuggestionData,
   IDict,
-  ISuggestionChange,
   ISuggestionData,
   ISuggestionsManager
 } from '../types';
-import { ISignal, Signal } from '@lumino/signaling';
-import { Cell, ICellModel } from '@jupyterlab/cells';
-import { UUID } from '@lumino/coreutils';
+
+export interface ISerializedSuggessionData {
+  originalCellId: string;
+  newSource: string;
+}
 
 const METADATA_KEY = 'jupyter_suggestion';
-export class LocalSuggestionsManager implements ISuggestionsManager {
-  constructor(options: LocalSuggestionsManager.IOptions) {
+export class LocalSuggestionsManager
+  extends BaseSuggestionsManager
+  implements ISuggestionsManager
+{
+  constructor(options: BaseSuggestionsManager.IOptions) {
+    super(options);
     this._tracker = options.tracker;
     this._tracker.widgetAdded.connect(this._notebookAdded, this);
   }
 
-  get isDisposed(): boolean {
-    return this._isDisposed;
-  }
+  sourceLiveUpdate = false;
 
-  get suggestionChanged(): ISignal<ISuggestionsManager, ISuggestionChange> {
-    return this._suggestionChanged;
-  }
-  dispose(): void {
-    if (this._isDisposed) {
-      return;
-    }
-    this._tracker.widgetAdded.disconnect(this._notebookAdded);
-    Signal.clearData(this);
-    this._isDisposed = true;
-  }
+  name = 'Local Suggestion Manager';
 
   async getAllSuggestions(
     notebook: NotebookPanel
-  ): Promise<IAllSuggestions | undefined> {
+  ): Promise<IAllSuggestionData | undefined> {
     const path = notebook.context.localPath;
     if (this._suggestionsMap.has(path)) {
       return this._suggestionsMap.get(path);
     } else {
-      const savedSuggestions = notebook.context.model.getMetadata(METADATA_KEY);
+      const savedSuggestions: IDict<IDict<ISerializedSuggessionData>> =
+        notebook.context.model.getMetadata(METADATA_KEY);
       if (savedSuggestions) {
-        const currentSuggestion = new Map<string, IDict<ISuggestionData>>(
-          Object.entries(savedSuggestions)
+        const currentSuggestion = new Map<string, IDict<ISuggestionData>>();
+        const cellList = notebook.content.model?.cells ?? [];
+        const cellMap: IDict<ICellModel> = {};
+        for (const element of cellList) {
+          cellMap[element.id] = element;
+        }
+        Object.entries(savedSuggestions).forEach(
+          ([cellID, serializedCellSuggestions]) => {
+            const data: IDict<ISuggestionData> = {};
+            Object.entries(serializedCellSuggestions).forEach(
+              ([id, serializedData]) => {
+                data[id] = this._deserializedSuggestion(
+                  serializedData,
+                  cellMap
+                );
+              }
+            );
+            currentSuggestion.set(cellID, data);
+          }
         );
         this._suggestionsMap.set(path, currentSuggestion);
         return currentSuggestion;
@@ -80,17 +103,16 @@ export class LocalSuggestionsManager implements ISuggestionsManager {
     }
     const cellSuggesions = currentSuggestions.get(cellId)!;
     const suggestionId = UUID.uuid4();
-    const cellModel = cell.model.toJSON();
     const suggestionContent: ISuggestionData = {
-      content: cellModel,
-      newSource: cellModel.source as string
+      originalCellId: cellId,
+      cellModel: this._cloneCellModel(cell.model)
     };
     cellSuggesions[suggestionId] = suggestionContent;
     await this._saveSuggestionToMetadata({
       notebook,
       cellId,
       suggestionId,
-      content: suggestionContent
+      suggestionContent
     });
     this._suggestionChanged.emit({
       notebookPath: path,
@@ -115,7 +137,7 @@ export class LocalSuggestionsManager implements ISuggestionsManager {
       suggestionId
     });
     if (currentSuggestion && notebook.content.model?.cells) {
-      const { newSource } = currentSuggestion;
+      const newSource = currentSuggestion.cellModel.sharedModel.getSource();
       for (const element of notebook.content.model.cells) {
         if (element.id === cellId) {
           element.sharedModel.setSource(newSource);
@@ -168,8 +190,6 @@ export class LocalSuggestionsManager implements ISuggestionsManager {
         nbSuggestions.has(cellId) &&
         nbSuggestions.get(cellId)![suggestionId]
       ) {
-        const currentSuggestion = nbSuggestions.get(cellId)![suggestionId];
-        currentSuggestion.newSource = newSource;
         await this._updateSuggestionInMetadata({
           notebook,
           cellId,
@@ -189,17 +209,20 @@ export class LocalSuggestionsManager implements ISuggestionsManager {
     notebook: NotebookPanel;
     cellId: string;
     suggestionId: string;
-    content: IDict;
+    suggestionContent: ISuggestionData;
   }) {
-    const { notebook, cellId, suggestionId, content } = options;
-    const currentSuggestions: IDict =
+    const { notebook, cellId, suggestionId, suggestionContent } = options;
+    const currentSuggestions: IDict<IDict<ISerializedSuggessionData>> =
       notebook.context.model.getMetadata(METADATA_KEY) ?? {};
-
+    const serializedData: ISerializedSuggessionData = {
+      originalCellId: suggestionContent.originalCellId,
+      newSource: suggestionContent.cellModel.sharedModel.getSource()
+    };
     const newData = {
       ...currentSuggestions,
       [cellId]: {
         ...(currentSuggestions[cellId] ?? {}),
-        [suggestionId]: content
+        [suggestionId]: serializedData
       }
     };
     notebook.context.model.setMetadata(METADATA_KEY, newData);
@@ -220,6 +243,9 @@ export class LocalSuggestionsManager implements ISuggestionsManager {
     if (currentSuggestions[cellId][suggestionId]) {
       delete currentSuggestions[cellId][suggestionId];
     }
+    if (Object.keys(currentSuggestions[cellId]).length === 0) {
+      delete currentSuggestions[cellId];
+    }
     notebook.context.model.setMetadata(METADATA_KEY, currentSuggestions);
     await notebook.context.save();
   }
@@ -231,8 +257,9 @@ export class LocalSuggestionsManager implements ISuggestionsManager {
     newSource: string;
   }) {
     const { notebook, cellId, suggestionId, newSource } = options;
-    const currentSuggestions: IDict<IDict<ISuggestionData>> | undefined =
-      notebook.context.model.getMetadata(METADATA_KEY);
+    const currentSuggestions:
+      | IDict<IDict<{ content: ICell; newSource: string }>>
+      | undefined = notebook.context.model.getMetadata(METADATA_KEY);
     if (
       !currentSuggestions ||
       !currentSuggestions[cellId] ||
@@ -247,25 +274,49 @@ export class LocalSuggestionsManager implements ISuggestionsManager {
     await notebook.context.save();
   }
 
-  private _notebookAdded(tracker: INotebookTracker, panel: NotebookPanel) {
-    panel.disposed.connect(p => {
-      const localPath = p.context.localPath;
-      if (this._suggestionsMap.has(localPath)) {
-        this._suggestionsMap.delete(localPath);
+  private _cloneCellModel(
+    cellModel: ICellModel,
+    newSource?: string
+  ): ICellModel {
+    let copiedCellModel: CellModel | undefined;
+    const mimeType = cellModel.mimeType;
+    switch (cellModel.type) {
+      case 'code': {
+        copiedCellModel = new CodeCellModel();
+        break;
       }
-    });
-  }
-  private _suggestionChanged = new Signal<
-    ISuggestionsManager,
-    ISuggestionChange
-  >(this);
-  private _isDisposed = false;
-  private _tracker: INotebookTracker;
-  private _suggestionsMap = new Map<string, IAllSuggestions>();
-}
+      case 'markdown': {
+        copiedCellModel = new MarkdownCellModel();
+        break;
+      }
+      case 'raw': {
+        copiedCellModel = new RawCellModel();
+        break;
+      }
+      default:
+        break;
+    }
 
-export namespace LocalSuggestionsManager {
-  export interface IOptions {
-    tracker: INotebookTracker;
+    if (!copiedCellModel) {
+      throw new Error('Invalid cell type');
+    }
+    copiedCellModel.mimeType = mimeType;
+    copiedCellModel.sharedModel.setSource(
+      newSource ?? cellModel.sharedModel.getSource()
+    );
+    return copiedCellModel;
+  }
+
+  private _deserializedSuggestion(
+    serializedData: ISerializedSuggessionData,
+    cellMap: IDict<ICellModel>
+  ): ISuggestionData {
+    const { originalCellId, newSource } = serializedData;
+    const originalCellModel = cellMap[serializedData.originalCellId];
+    const newCellModel = this._cloneCellModel(originalCellModel, newSource);
+    return {
+      originalCellId,
+      cellModel: newCellModel
+    };
   }
 }

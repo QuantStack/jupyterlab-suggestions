@@ -49,7 +49,7 @@ def bump():
     root_json = json.loads(package_json.read_text(encoding="utf-8"))
     root_json["version"] = js_version
     package_json.write_text(json.dumps(root_json), encoding="utf-8")
-    run(["yarn", "install"], check=True)
+    run(["jlpm", "install"], check=True)
     run(
         [
             "node",
@@ -64,7 +64,7 @@ def bump():
     # pin jupyter_suggestions_* package to the same version
     bump_jupyter_suggestions_deps(py_version)
     # bump the JS version with lerna
-    run(f"yarn run bump:js:version {js_version}", shell=True, check=True)
+    run(f"jlpm run bump:js:version {js_version}", shell=True, check=True)
 
 
 if __name__ == "__main__":

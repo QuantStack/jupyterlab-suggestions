@@ -1,6 +1,6 @@
 {
-  "title": "@jupyter/jupyter-suggestions-core",
-  "description": "@jupyter/jupyter-suggestions-core settings.",
+  "title": "@jupyter/suggestions-core",
+  "description": "@jupyter/suggestions-core settings.",
   "type": "object",
   "additionalProperties": false,
   "jupyter.lab.toolbars": {

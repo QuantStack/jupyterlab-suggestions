@@ -33,10 +33,14 @@ jobs:
       - name: Build the extension
         run: |
           set -eux
+          export LANG=en_US.UTF-8
+          export LANGUAGE=en_US:en
+          export LC_ALL=en_US.UTF-8
+
           jlpm dev
 
           jupyter labextension list
-          jupyter labextension list 2>&1 | grep -ie "jupyter-suggestions.*OK"
+          jupyter labextension list 2>&1 | grep -ie "suggestions.*OK"
           python -m jupyterlab.browser_check
 
       - name: Package the extension
@@ -44,7 +48,7 @@ jobs:
           set -eux
 
           pip install hatch
-          yarn build:packages
+          jlpm build:packages
 
       - name: Upload extension packages
         uses: actions/upload-artifact@v4
@@ -79,7 +83,7 @@ jobs:
 
 
           jupyter labextension list
-          jupyter labextension list 2>&1 | grep -ie "jupyter-suggestions.*OK"
+          jupyter labextension list 2>&1 | grep -ie "suggestions.*OK"
           python -m jupyterlab.browser_check --no-browser-test
 
   check_links:
