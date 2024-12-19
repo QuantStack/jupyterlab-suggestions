@@ -4,6 +4,8 @@
 
 A JupyterLab extension for suggesting changes.
 
+![screenshot of a cell suggestion in a notebook](./jupyter-suggestions.png)
+
 ## Status
 
 ⚠️ WIP ⚠️
