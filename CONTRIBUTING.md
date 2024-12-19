@@ -10,7 +10,7 @@ The `jlpm` command is JupyterLab's pinned version of
 
 ```bash
 # Clone the repo to your local environment
-git clone https://github.com/QuantStack/jupyter-suggestions.git
+git clone https://github.com/jupyterlab-contrib/jupyter-suggestions.git
 # Change directory to the jupytercad directory
 cd jupyter-suggestions
 # Install JupyterLab for jlpm
