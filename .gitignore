@@ -122,3 +122,7 @@ dmypy.json
 
 python/jupyter_suggestions_rtc/jupyter_suggestions_rtc/labextension
 python/jupyter_suggestions_rtc/jupyter_suggestions_rtc/_version.py
+
+# Integration tests
+**/ui-tests/test-results/
+**/ui-tests/playwright-report/

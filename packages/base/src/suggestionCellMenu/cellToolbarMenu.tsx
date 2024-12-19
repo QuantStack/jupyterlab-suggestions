@@ -107,7 +107,14 @@ function _CellToolbarMenuReact(props: IProps) {
 
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as any)) {
+      const target = event.target as any;
+      if (!target) {
+        return;
+      }
+      if (currentDiv.current && currentDiv.current.contains(target)) {
+        return;
+      }
+      if (menuRef.current && !menuRef.current.contains(target)) {
         setOpen(false);
       }
     };
@@ -117,6 +124,7 @@ function _CellToolbarMenuReact(props: IProps) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [currentDiv]);
+
   const cellSuggestions = cell?.model?.id
     ? (suggestionModel.getCellSuggestions({
         cellId: cell.model.id
