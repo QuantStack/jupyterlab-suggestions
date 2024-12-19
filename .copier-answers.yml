@@ -2,13 +2,13 @@
 _commit: v4.3.5
 _src_path: https://github.com/jupyterlab/extension-template
 author_email: ''
-author_name: QuantStack
+author_name: JupyterLab Contrib Team
 has_binder: false
 has_settings: false
 kind: frontend
 labextension_name: jupyter-suggestions
 project_short_description: A JupyterLab extension for suggesting changes.
 python_name: jupyterlab_suggestions
-repository: https://github.com/QuantStack/jupyter-suggestions
+repository: https://github.com/jupyterlab-contrib/jupyter-suggestions
 test: false
 

@@ -7,9 +7,9 @@
     "jupyterlab",
     "jupyterlab-extension"
   ],
-  "homepage": "https://github.com/QuantStack/jupyter-suggestions",
+  "homepage": "https://github.com/jupyterlab-contrib/jupyter-suggestions",
   "bugs": {
-    "url": "https://github.com/QuantStack/jupyter-suggestions/issues"
+    "url": "https://github.com/jupyterlab-contrib/jupyter-suggestions/issues"
   },
   "license": "BSD-3-Clause",
   "author": "QuantStack",
@@ -23,7 +23,7 @@
   "style": "style/index.css",
   "repository": {
     "type": "git",
-    "url": "https://github.com/QuantStack/jupyter-suggestions.git"
+    "url": "https://github.com/jupyterlab-contrib/jupyter-suggestions.git"
   },
   "scripts": {
     "build": "tsc -b",
