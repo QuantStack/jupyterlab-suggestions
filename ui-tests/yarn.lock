@@ -3730,11 +3730,11 @@ __metadata:
   linkType: hard
 
 "systeminformation@npm:^5.8.6":
-  version: 5.21.16
-  resolution: "systeminformation@npm:5.21.16"
+  version: 5.23.14
+  resolution: "systeminformation@npm:5.23.14"
   bin:
     systeminformation: lib/cli.js
-  checksum: 8/7f9884bc5b08809c424cf9b9cdfc1984097c5fbc1ac40fe5f86db3600ec5ddc50ae8c15970f923a5e63ba8652ef701e9b244a8ac449805e303e34dbe8804ddbe
+  checksum: 10c0/6e7a6692c0b2ddfb347b14f376856d6993fd7598e037de8016cfe48d9a33783742ee628e627b75b4c19bacdd4d08fbb0af3c106d54c90add171e56ad749dbfed
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
   languageName: node
   linkType: hard
